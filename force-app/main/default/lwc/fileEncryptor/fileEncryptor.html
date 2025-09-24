@@ -1,0 +1,143 @@
+<template>
+    <!-- Step 0: Sign-Up -->
+    <lightning-card title="Sign-Up">
+        <div class="slds-p-around_medium">
+            <lightning-input 
+                label="Email" 
+                value={signupEmail} 
+                onchange={handleSignupEmail}>
+            </lightning-input>
+
+            <lightning-input 
+                label="Phone Number" 
+                value={signupPhone} 
+                onchange={handleSignupPhone} 
+                class="slds-m-top_small">
+            </lightning-input>
+
+            <lightning-button 
+                label="Register" 
+                onclick={registerUser} 
+                class="slds-m-top_small">
+            </lightning-button>
+        </div>
+    </lightning-card>
+
+    <!-- Step 1: Login Verification -->
+    <lightning-card title="Login Verification" class="slds-m-top_medium">
+        <div class="slds-p-around_medium">
+            <lightning-input 
+                label="Enter your Email" 
+                value={email} 
+                onchange={handleEmailChange}>
+            </lightning-input>
+
+            <lightning-button 
+                label="Send OTP" 
+                onclick={sendOtp} 
+                class="slds-m-top_small">
+            </lightning-button>
+
+            <lightning-input 
+                label="OTP" 
+                value={otp} 
+                onchange={handleOtpChange} 
+                class="slds-m-top_small">
+            </lightning-input>
+
+            <lightning-button 
+                label="Verify OTP" 
+                onclick={verifyOtp} 
+                class="slds-m-top_small">
+            </lightning-button>
+        </div>
+    </lightning-card>
+
+    <!-- Step 2: File List (after OTP verified) -->
+    <template if:true={otpVerified}>
+        <lightning-card title="Your Files" class="slds-m-top_medium">
+            <div class="slds-p-around_medium">
+                <template for:each={fileList} for:item="file">
+                    <div key={file.Id} class="slds-box slds-m-around_x-small">
+                        <p><strong>{file.Name}</strong></p>
+                        <lightning-button 
+                            label="Select" 
+                            data-id={file.Id} 
+                            onclick={handleFileSelect} 
+                            class="slds-m-right_small">
+                        </lightning-button>
+                    </div>
+                </template>
+            </div>
+        </lightning-card>
+
+        <!-- Step 3: Decrypt + Delete -->
+        <template if:true={selectedFile}>
+            <lightning-card title="Decrypt or Delete File" class="slds-m-top_medium">
+                <div class="slds-p-around_medium">
+                    <lightning-input 
+                        label="Enter AES Key" 
+                        value={aesKey} 
+                        onchange={handleKeyChange}>
+                    </lightning-input>
+
+                    <lightning-button 
+                        label="Decrypt" 
+                        onclick={decryptData} 
+                        class="slds-m-top_small slds-m-right_small">
+                    </lightning-button>
+
+                    <lightning-button 
+                        label="Delete" 
+                        onclick={deleteFile} 
+                        variant="destructive" 
+                        class="slds-m-top_small">
+                    </lightning-button>
+
+                    <template if:true={decryptedData}>
+                        <p class="slds-m-top_medium"><strong>Decrypted Data:</strong></p>
+                        <p>{decryptedData}</p>
+                    </template>
+                </div>
+            </lightning-card>
+        </template>
+
+        <!-- Step 4: Encrypt new file -->
+        <lightning-card title="Encrypt New File" class="slds-m-top_medium">
+            <div class="slds-p-around_medium">
+                <lightning-input 
+                    label="File Name" 
+                    value={newFileName} 
+                    onchange={handleNewFileName}>
+                </lightning-input>
+
+                <lightning-textarea 
+                    label="File Content" 
+                    value={newFileContent} 
+                    onchange={handleNewFileContent} 
+                    class="slds-m-top_small">
+                </lightning-textarea>
+
+                <lightning-button 
+                    label="Encrypt & Save" 
+                    onclick={encryptData} 
+                    class="slds-m-top_small">
+                </lightning-button>
+
+                <template if:true={cipherText}>
+                    <p class="slds-m-top_medium"><strong>Encrypted Ciphertext:</strong></p>
+                    <p>{cipherText}</p>
+                </template>
+            </div>
+        </lightning-card>
+    </template>
+
+    <!-- Step 5: Footer -->
+    <div class="slds-p-around_medium slds-text-align_center slds-m-top_large">
+        <p><strong>If you want to delete your account then contact the org at 7975656035</strong></p>
+        <p class="slds-m-top_small slds-text-color_error">
+            ⚠️ If you forgot your encryption key then your data is LOST FOREVER!!!  
+            No one can recover that data as the company follows ZERO‑TRUST architecture systems.
+        </p>
+    </div>
+</template>
